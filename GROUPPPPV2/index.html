@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no"
+    />
+    <title>LifeBoard — Your workspace. Your way.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app" class="mode-edit">
+      <!-- ================= TOP BAR ================= -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button
+            id="btnToggleSidebar"
+            class="icon-btn"
+            title="Toggle widget library"
+          >
+            <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
+          </button>
+          <div class="brand">
+            <span class="brand-mark">◆</span>
+            <span class="brand-name">LifeBoard</span>
+          </div>
+          <div class="dash-switcher">
+            <button id="dashSwitcherBtn" class="dash-current">
+              <span id="dashCurrentName">My Dashboard</span>
+              <svg viewBox="0 0 24 24" class="chev">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+            <div id="dashSwitcherMenu" class="dash-menu hidden"></div>
+          </div>
+        </div>
+
+        <div class="topbar-center">
+          <button id="cmdPaletteBtn" class="cmdk-trigger">
+            <svg viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M21 21l-4.3-4.3" />
+            </svg>
+            <span>Search or run a command…</span>
+            <kbd>⌘K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar-right">
+          <div class="mode-toggle" id="modeToggle">
+            <button class="mode-opt active" data-mode="edit">Edit</button>
+            <button class="mode-opt" data-mode="preview">Preview</button>
+          </div>
+          <button id="btnUndo" class="icon-btn" title="Undo (⌘Z)">
+            <svg viewBox="0 0 24 24">
+              <path d="M9 14L4 9l5-5" />
+              <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
+            </svg>
+          </button>
+          <button id="btnRedo" class="icon-btn" title="Redo (⌘⇧Z)">
+            <svg viewBox="0 0 24 24">
+              <path d="M15 14l5-5-5-5" />
+              <path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13" />
+            </svg>
+          </button>
+          <button id="btnMeta" class="icon-btn" title="Toggle meta mode">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"
+              />
+            </svg>
+          </button>
+          <button id="btnSave" class="pill-btn">Save</button>
+        </div>
+      </header>
+
+      <div class="body-wrap">
+        <!-- ================= WIDGET LIBRARY SIDEBAR ================= -->
+        <aside id="sidebar" class="sidebar">
+          <div class="sidebar-head">
+            <h2>Widget Library</h2>
+            <p>Drag a widget into your workspace</p>
+          </div>
+          <input
+            id="widgetSearch"
+            class="search-input"
+            placeholder="Search widgets…"
+          />
+          <div id="widgetLibrary" class="widget-library"></div>
+        </aside>
+
+        <!-- ================= MAIN WORKSPACE ================= -->
+        <main id="workspace" class="workspace">
+          <div class="workspace-header">
+            <p class="greeting-eyebrow" id="dateLine">—</p>
+            <h1 id="greeting">Good morning.</h1>
+            <p class="subgreeting" id="subGreeting">
+              Here's your workspace, arranged exactly how you left it.
+            </p>
+          </div>
+
+          <div id="sectionList" class="section-list"></div>
+
+          <button id="btnAddSection" class="add-section-btn">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+            Add section
+          </button>
+        </main>
+
+        <!-- ================= INSPECTOR ================= -->
+        <aside id="inspector" class="inspector hidden">
+          <div class="inspector-head">
+            <h2 id="inspectorTitle">Widget</h2>
+            <button id="btnCloseInspector" class="icon-btn small">
+              <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" /></svg>
+            </button>
+          </div>
+          <div class="inspector-tabs" id="inspectorTabs">
+            <button class="tab-btn active" data-tab="content">Content</button>
+            <button class="tab-btn" data-tab="appearance">Appearance</button>
+            <button class="tab-btn" data-tab="layout">Layout</button>
+            <button class="tab-btn" data-tab="effects">Effects</button>
+          </div>
+          <div class="inspector-body" id="inspectorBody"></div>
+          <div class="inspector-foot">
+            <button id="btnDeleteWidget" class="danger-btn">
+              Remove widget
+            </button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ================= COMMAND PALETTE ================= -->
+    <div id="cmdPalette" class="cmdk-overlay hidden">
+      <div class="cmdk-box">
+        <div class="cmdk-input-row">
+          <svg viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.3-4.3" />
+          </svg>
+          <input
+            id="cmdInput"
+            placeholder="Type a command…"
+            autocomplete="off"
+          />
+        </div>
+        <div id="cmdList" class="cmdk-list"></div>
+      </div>
+    </div>
+
+    <!-- ================= TEMPLATE MODAL ================= -->
+    <div id="templateModal" class="modal-overlay hidden">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h2>Create a new dashboard</h2>
+          <button id="btnCloseTemplate" class="icon-btn small">
+            <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" /></svg>
+          </button>
+        </div>
+        <input
+          id="newDashName"
+          class="text-input"
+          placeholder="Dashboard name"
+        />
+        <p class="modal-sub">Start from a template</p>
+        <div id="templateGrid" class="template-grid"></div>
+      </div>
+    </div>
+
+    <!-- ================= TOAST ================= -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

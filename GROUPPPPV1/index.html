@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en" class="dark-theme">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LifeBoard - Your workspace. Your way.</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Phosphor Icons (Premium Aesthetic) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- jQuery UI CSS (Minimal overrides in custom CSS) -->
+    <link
+      rel="stylesheet"
+      href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
+    />
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Topbar -->
+      <header id="topbar" class="glass">
+        <div class="topbar-left">
+          <div class="logo">
+            <i class="ph-fill ph-infinity"></i>
+            <span>LifeBoard</span>
+          </div>
+          <div class="dashboard-selector">
+            <span
+              id="current-board-name"
+              contenteditable="true"
+              spellcheck="false"
+              >My Workspace</span
+            >
+          </div>
+        </div>
+
+        <div class="topbar-center">
+          <button
+            class="cmd-trigger tooltip"
+            data-tooltip="Search / Commands"
+            id="btn-cmd"
+          >
+            <i class="ph ph-magnifying-glass"></i>
+            <span>Command Palette</span>
+            <kbd>⌘K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar-right">
+          <button
+            class="icon-btn tooltip"
+            data-tooltip="Undo (⌘Z)"
+            id="btn-undo"
+          >
+            <i class="ph ph-arrow-u-up-left"></i>
+          </button>
+          <button
+            class="icon-btn tooltip"
+            data-tooltip="Redo (⌘⇧Z)"
+            id="btn-redo"
+          >
+            <i class="ph ph-arrow-u-up-right"></i>
+          </button>
+          <div class="divider"></div>
+          <button
+            class="icon-btn tooltip"
+            data-tooltip="Templates"
+            id="btn-templates"
+          >
+            <i class="ph ph-layout"></i>
+          </button>
+          <button
+            class="icon-btn tooltip"
+            data-tooltip="Preview Mode"
+            id="btn-preview"
+          >
+            <i class="ph ph-play"></i>
+          </button>
+          <button
+            class="primary-btn tooltip"
+            data-tooltip="Save (⌘S)"
+            id="btn-save"
+          >
+            <i class="ph ph-floppy-disk"></i> Save
+          </button>
+          <div class="avatar">LB</div>
+        </div>
+      </header>
+
+      <div id="main-layout">
+        <!-- Left Sidebar: Widget Library -->
+        <aside id="sidebar-left" class="glass">
+          <div class="sidebar-header">
+            <h3>Library</h3>
+            <button class="icon-btn toggle-sidebar" data-target="sidebar-left">
+              <i class="ph ph-caret-left"></i>
+            </button>
+          </div>
+          <div class="sidebar-scrollable">
+            <div class="widget-category">
+              <h4>Productivity</h4>
+              <div class="library-grid">
+                <div class="library-item" data-type="todo">
+                  <i class="ph ph-check-square"></i><span>To-Do List</span>
+                </div>
+                <div class="library-item" data-type="notes">
+                  <i class="ph ph-notepad"></i><span>Notes</span>
+                </div>
+                <div class="library-item" data-type="goals">
+                  <i class="ph ph-target"></i><span>Daily Goals</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="widget-category">
+              <h4>Study & Focus</h4>
+              <div class="library-grid">
+                <div class="library-item" data-type="pomodoro">
+                  <i class="ph ph-timer"></i><span>Pomodoro</span>
+                </div>
+                <div class="library-item" data-type="schedule">
+                  <i class="ph ph-calendar-blank"></i><span>Schedule</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="widget-category">
+              <h4>Utilities</h4>
+              <div class="library-grid">
+                <div class="library-item" data-type="clock">
+                  <i class="ph ph-clock"></i><span>Clock</span>
+                </div>
+                <div class="library-item" data-type="calculator">
+                  <i class="ph ph-calculator"></i><span>Calculator</span>
+                </div>
+                <div class="library-item" data-type="weather">
+                  <i class="ph ph-cloud-sun"></i><span>Weather</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Center: Dashboard Workspace -->
+        <main id="workspace">
+          <!-- ADD THESE TWO NEW BUTTONS HERE -->
+          <button
+            class="floating-toggle left"
+            data-target="sidebar-left"
+            title="Show Library"
+          >
+            <i class="ph ph-list"></i>
+          </button>
+          <button
+            class="floating-toggle right"
+            data-target="sidebar-right"
+            title="Show Inspector"
+          >
+            <i class="ph ph-faders"></i>
+          </button>
+
+          <div class="workspace-bg"></div>
+          <div class="empty-state">
+            <i class="ph ph-squares-four"></i>
+            <h2>Design Your Life</h2>
+            <p>
+              Drag widgets from the library to build your personalized
+              dashboard.
+            </p>
+            <button class="primary-btn mt-4" id="btn-empty-template">
+              <i class="ph ph-magic-wand"></i> Start with a Template
+            </button>
+          </div>
+
+          <div id="board-canvas">
+            <!-- Sections and widgets render here -->
+          </div>
+
+          <button class="add-section-btn" id="btn-add-section">
+            <i class="ph ph-plus"></i> Add Section
+          </button>
+        </main>
+
+        <!-- Right Sidebar: Inspector -->
+        <aside id="sidebar-right" class="glass">
+          <div class="sidebar-header">
+            <h3>Inspector</h3>
+            <button class="icon-btn toggle-sidebar" data-target="sidebar-right">
+              <i class="ph ph-caret-right"></i>
+            </button>
+          </div>
+
+          <div class="inspector-tabs">
+            <button class="tab-btn active" data-tab="design">Design</button>
+            <button class="tab-btn" data-tab="effects">Effects</button>
+            <button class="tab-btn" data-tab="meta">Meta</button>
+          </div>
+
+          <div class="inspector-content">
+            <div class="inspector-empty">Select a widget to edit</div>
+
+            <!-- Design Tab -->
+            <div class="tab-pane active" id="tab-design">
+              <div class="prop-group">
+                <label>Widget Title</label>
+                <input
+                  type="text"
+                  id="prop-title"
+                  class="prop-input"
+                  placeholder="e.g. My Tasks"
+                />
+              </div>
+              <div class="prop-group">
+                <label>Background</label>
+                <input type="color" id="prop-bg" value="#121212" />
+              </div>
+              <div class="prop-group">
+                <label>Border Radius</label>
+                <input
+                  type="range"
+                  id="prop-radius"
+                  min="0"
+                  max="40"
+                  value="16"
+                />
+                <div class="range-val" id="val-radius">16px</div>
+              </div>
+              <div class="prop-group">
+                <label>Width</label>
+                <select id="prop-width" class="prop-input">
+                  <option value="100%">100% (Full)</option>
+                  <option value="50%">50% (Half)</option>
+                  <option value="33.33%">33% (Third)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Effects Tab -->
+            <div class="tab-pane" id="tab-effects">
+              <div class="toggle-group">
+                <label>Glassmorphism</label>
+                <label class="switch"
+                  ><input type="checkbox" id="eff-glass" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="toggle-group">
+                <label>Neon Glow</label>
+                <label class="switch"
+                  ><input type="checkbox" id="eff-neon" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="toggle-group">
+                <label>Floating Hover</label>
+                <label class="switch"
+                  ><input type="checkbox" id="eff-float" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+            </div>
+
+            <!-- Meta Tab -->
+            <div class="tab-pane" id="tab-meta">
+              <div class="meta-card">
+                <div class="meta-row">
+                  <span>ID:</span><span id="meta-id">--</span>
+                </div>
+                <div class="meta-row">
+                  <span>Type:</span><span id="meta-type">--</span>
+                </div>
+                <div class="meta-row">
+                  <span>Created:</span><span id="meta-created">--</span>
+                </div>
+                <div class="meta-row">
+                  <span>Status:</span><span class="status-live">Active</span>
+                </div>
+              </div>
+              <button class="danger-btn w-100" id="btn-delete-widget">
+                <i class="ph ph-trash"></i> Delete Widget
+              </button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Command Palette -->
+    <div class="modal-overlay" id="cmd-modal">
+      <div class="cmd-palette glass">
+        <div class="cmd-input-wrap">
+          <i class="ph ph-magnifying-glass"></i>
+          <input type="text" id="cmd-input" placeholder="Type a command..." />
+        </div>
+        <ul class="cmd-list">
+          <li data-action="save">
+            <i class="ph ph-floppy-disk"></i> Save Dashboard
+          </li>
+          <li data-action="preview">
+            <i class="ph ph-play"></i> Toggle Preview Mode
+          </li>
+          <li data-action="templates">
+            <i class="ph ph-layout"></i> Open Templates
+          </li>
+          <li data-action="clear">
+            <i class="ph ph-trash"></i> Clear Dashboard
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Templates Modal -->
+    <div class="modal-overlay" id="templates-modal">
+      <div class="dialog-box glass">
+        <h2><i class="ph ph-layout"></i> Dashboard Templates</h2>
+        <p>Choose a starting point for your personalized workspace.</p>
+        <div class="template-grid">
+          <div class="template-card" data-template="student">
+            <i class="ph ph-graduation-cap"></i>
+            <h3>Student</h3>
+            <p>Pomodoro, Tasks, Notes, Schedule</p>
+          </div>
+          <div class="template-card" data-template="productivity">
+            <i class="ph ph-rocket-launch"></i>
+            <h3>Productivity</h3>
+            <p>Goals, Tasks, Clock</p>
+          </div>
+          <div class="template-card" data-template="blank">
+            <i class="ph ph-file-dashed"></i>
+            <h3>Blank</h3>
+            <p>Start from scratch</p>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="secondary-btn btn-close-modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
